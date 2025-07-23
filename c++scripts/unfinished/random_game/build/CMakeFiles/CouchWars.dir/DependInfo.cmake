@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/plankton/dev/c++scripts/main.cpp" "CMakeFiles/CouchWars.dir/main.cpp.o" "gcc" "CMakeFiles/CouchWars.dir/main.cpp.o.d"
+  "/home/plankton/dev/c++scripts/unfinished/random_game/main.cpp" "CMakeFiles/CouchWars.dir/main.cpp.o" "gcc" "CMakeFiles/CouchWars.dir/main.cpp.o.d"
   "" "CouchWars" "gcc" "CMakeFiles/CouchWars.dir/link.d"
   )
 

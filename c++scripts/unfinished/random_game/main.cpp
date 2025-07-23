@@ -31,9 +31,10 @@ int main() {
     GameObject gameObject(sf::Vector2f(100, 100), sf::Vector2f(50, 50));
 
     //Render Loop
+
     while (window.isOpen()) {
         // SFML 3 pollEvent() returns std::optional<sf::Event>
-        // Handle events → Update game → Draw → Display
+        // Handle events → Update game -> Draw -> Display
         while (auto event = window.pollEvent()) {
             // Use event.value() or just *event to access the event
             if (event->is<sf::Event::Closed>()) {

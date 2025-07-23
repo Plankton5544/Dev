@@ -1,6 +1,7 @@
 CMakeFiles/CouchWars.dir/main.cpp.o: \
- /home/plankton/dev/c++scripts/main.cpp /usr/include/stdc-predef.h \
- /usr/include/SFML/Graphics.hpp /usr/include/SFML/Graphics/BlendMode.hpp \
+ /home/plankton/dev/c++scripts/unfinished/random_game/main.cpp \
+ /usr/include/stdc-predef.h /usr/include/SFML/Graphics.hpp \
+ /usr/include/SFML/Graphics/BlendMode.hpp \
  /usr/include/SFML/Graphics/Export.hpp /usr/include/SFML/Config.hpp \
  /usr/include/SFML/Graphics/CircleShape.hpp \
  /usr/include/SFML/Graphics/Shape.hpp \
