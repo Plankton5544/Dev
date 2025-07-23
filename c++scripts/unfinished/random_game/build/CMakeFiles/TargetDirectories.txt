@@ -1,0 +1,3 @@
+/home/plankton/dev/c++scripts/build/CMakeFiles/CouchWars.dir
+/home/plankton/dev/c++scripts/build/CMakeFiles/edit_cache.dir
+/home/plankton/dev/c++scripts/build/CMakeFiles/rebuild_cache.dir
