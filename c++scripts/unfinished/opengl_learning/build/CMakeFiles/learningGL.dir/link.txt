@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/learningGL.dir/link.d CMakeFiles/learningGL.dir/main.cpp.o CMakeFiles/learningGL.dir/src/glad.c.o -o learningGL  /usr/lib/libOpenGL.so /usr/lib/libGLX.so /usr/lib/libGLU.so -lglfw /usr/lib/libglm.a
