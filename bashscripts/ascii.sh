@@ -21,6 +21,11 @@ echo ""
 echo "Please Enter File To Ascify:"
 read -p "=>" input_tga
 
+if [ -z $input_tga ]; then
+  echo "ERROR! FILE MISSING"
+  exit 1
+fi
+
 #input_tga="input2.tga"
 
 
@@ -106,33 +111,32 @@ total_pixel_bytes=$((total_pixels * bytes_per_pixel))
 
 #==ECHOED=INFORMATION==#
 if [[ "$debug" == "y" ]] || [[ "$debug" == "Y" ]]; then
+  debugger=1
   echo "|--TGA HEADER--|"
-  echo $ID_length
-  echo $color_map_type
-  echo $image_type
+  echo "ID Length:      $ID_length"
+  echo "Color Map Type: $color_map_type"
+  echo "Image Type:     $image_type"
   echo "----------------"
-  echo $color_map_origin
-  echo $color_map_length
-  echo $color_map_entry_size
+  echo " |-Color--Map-| "
+  echo "ID Length:      $ID_length"
+  echo "Origin:            $color_map_origin"
+  echo "Length:            $color_map_length"
+  echo "Entry Size:     $color_map_entry_size"
   echo "----------------"
-  echo $x_origin
-  echo $y_origin
-  echo $width
-  echo $height
-  echo $pixel_depth
-  echo $image_descriptor
+  echo " |-Image-Spec-| "
+  echo "X Origin:          $x_origin"
+  echo "Y Origin:          $y_origin"
+  echo "Width:             $width"
+  echo "Height:            $height"
+  echo "Pixel Depth:     $pixel_depth"
+  echo "Image Desc:      $image_descriptor"
   echo "----------------"
 
   echo "|--IMAGE & COLOR MAP DATA--|"
-  echo "Pixel data starts at byte: $pixel_data_start"
-  echo "Bytes per pixel: $bytes_per_pixel"
-  echo "Total pixels: $total_pixels"
-  echo "Total pixel data: $total_pixel_bytes bytes" Calculate pixel info
-  echo "|--------------------------|"
-  echo "Pixel data starts at byte: $pixel_data_start"
-  echo "Bytes per pixel: $bytes_per_pixel"
-  echo "Total pixels: $total_pixels"
-  echo "Total pixel data: $total_pixel_bytes bytes"
+  echo "Pixel data starts at byte:  $pixel_data_start"
+  echo "Bytes per pixel:            $bytes_per_pixel"
+  echo "Total pixels:               $total_pixels"
+  echo "Total pixel data:           $total_pixel_bytes bytes"
   echo "|--------------------------|"
 fi
 #======================#
@@ -142,6 +146,9 @@ fi
 
 
 #======ASCII=CONVERSIONS======#
+if [[ "$debugger" != 1 ]]; then
+  printf "\033c"
+fi
 brightness_scale=" .,;?&$%#@"
 brightness_levels=10
 
@@ -181,6 +188,7 @@ for ((pixel=0; pixel<total_pixels; pixel++)); do
         fi
     fi
   done
+
       #=============================#
 
 
