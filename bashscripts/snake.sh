@@ -7,8 +7,8 @@
 inter=0.1      #<--- Sets The Refresh Rate
 width=20       #<--- Sets Pixl Width
 height=20      #<--- Sets Pixl Length
-plyrx=10       #<--- Determine The Starting X Position For Player 
-plyry=10       #<--- Determine The Starting Y Position For Player 
+plyrx=10       #<--- Determine The Starting X Position For Player
+plyry=10       #<--- Determine The Starting Y Position For Player
 end=0          #<--- Sets The End Of Stop To Continue (1 For End, 0 For Run)
 background="." #<--- Sets The Background Character
 snake="S"      #<--- Sets The Snake Character
@@ -99,20 +99,20 @@ drw() {
                       echo -n "0 "
                      elif [ "$lp" = "$oldX" ] && [ "$hp" = "$oldY" ]; then
                        echo -n "0 "
-         else 
+         else
             echo -n "$background "
          fi
 
          ((lp++))
        done
-       echo 
+       echo
        ((hp++))
     done
 if [ $plyrx -eq $fdx ] && [ $plyry -eq $fdy ]; then
   fd
   ((tail++))
 fi
-if [ "$plyrx" = "$ooldx" ] && [ "$plyry" = "$ooldy" ] || [ "$plyrx" = "$oooldx" ] && [ "$plyry" = "$oooldy" ] || [ "$plyrx" = "$Oldx" ] && [ "$plyry" = "$Oldy" ] || [ "$plyrx" = "$OLdx" ] && [ "$plyry" = "$OLdy" ] || [ "$plyrx" = "$OLDx" ] && [ "$plyry" = "$OLDy" ] || [ "$plyrx" = "$OLDX" ] && [ "$plyry" = "$OLDY" ] || [ "$plyrx" = "$oLDX" ] && [ "$plyry" = "$oLDY" ] || [ "$plyrx" = "$olDX" ] && [ "$plyry" = "$olDY" ] || [ "$plyrx" = "$oldX" ] && [ "$plyry" = "$oldY" ]; then 
+if [ "$plyrx" = "$ooldx" ] && [ "$plyry" = "$ooldy" ] || [ "$plyrx" = "$oooldx" ] && [ "$plyry" = "$oooldy" ] || [ "$plyrx" = "$Oldx" ] && [ "$plyry" = "$Oldy" ] || [ "$plyrx" = "$OLdx" ] && [ "$plyry" = "$OLdy" ] || [ "$plyrx" = "$OLDx" ] && [ "$plyry" = "$OLDy" ] || [ "$plyrx" = "$OLDX" ] && [ "$plyry" = "$OLDY" ] || [ "$plyrx" = "$oLDX" ] && [ "$plyry" = "$oLDY" ] || [ "$plyrx" = "$olDX" ] && [ "$plyry" = "$olDY" ] || [ "$plyrx" = "$oldX" ] && [ "$plyry" = "$oldY" ]; then
 #Ridiculous Brute Force Checks From Previous...
 end=1
 fi
@@ -125,7 +125,7 @@ diry=0
 ####################
 #Main Loop With End#
 ####################
-while [ $end -eq 0 ]; do 
+while [ $end -eq 0 ]; do
   #Brute Force For Tail Its Ugly And Buggy...
   if [[ "$tail" -gt 100 ]]; then
     inter=0.00000000067
@@ -196,19 +196,19 @@ fi
 
       case $move in
           "w") if [ $diry -eq 0 ]; then
-                dirx=0 
-                diry=-1 
+                dirx=0
+                diry=-1
                fi ;;
           "s") if [ $diry -eq 0 ]; then
-                 dirx=0 
+                 dirx=0
                  diry=1
                fi ;;
           "d") if [ $dirx -eq 0 ]; then
-                dirx=1 
-                diry=0 
+                dirx=1
+                diry=0
                fi ;;
           "a") if [ $dirx -eq 0 ]; then
-                dirx=-1 
+                dirx=-1
                 diry=0
                fi ;;
           "q") end=1 ;;
@@ -222,7 +222,7 @@ if [ $plyrx -gt $width ] || [ $plyrx -lt 1 ] || [ $plyry -gt $height ] || [ $ply
 end=1
 fi
   drw
-done 
+done
 ####################
 
 #Game Ending Screen#
