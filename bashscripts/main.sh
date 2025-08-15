@@ -9,7 +9,7 @@
 ##
 
 
-cut() {
+cuts() {
   sfile=${file//".sh"/}
   sfile=${sfile//"/home/plankton/dev/bashscripts/"/}
 }
@@ -22,7 +22,7 @@ file_echo() {
   done
 }
 
-clear() {
+clears() {
       printf "\033c"
 }
 
@@ -38,7 +38,7 @@ done
 
 
 welcome_screen() {
-  clear
+  clears
   printf "
    ____    _    ____  _   _    ____ _____ _   _ _____ ____      _    _
   | __ )  / \  / ___|| | | |  / ___| ____| \ | |_   _|  _ \    / \  | |
@@ -69,7 +69,7 @@ read -p "=>" action
 
 
 if [[ "$action" == *"e"* ]]; then
-  clear
+  clears
   printf "|==EXECUTE==|\n"
   #Echoes files inside of files
   for item in "${files[@]}"; do
@@ -79,16 +79,16 @@ if [[ "$action" == *"e"* ]]; then
 
   for file in ~/dev/bashscripts/*.sh; do
     if [[ "$file" == *"$input"* ]]; then
-      cut
+      cuts
       printf "Executing $sfile\n"
 
-      clear
+      clears
       exec bash $file
     fi
   done
 
 elif [[ "$action" == *"i"* ]]; then
-  clear
+  clears
   printf "|==Editing==|\n"
   #Echoes files inside of files
   for item in "${files[@]}"; do
@@ -98,15 +98,15 @@ elif [[ "$action" == *"i"* ]]; then
 
   for file in ~/dev/bashscripts/*.sh; do
     if [[ "$file" == *"$input"* ]]; then
-      cut
+      cuts
       printf "Editing $sfile\n"
-      clear
+      clears
       exec nvim $file
     fi
   done
 
 elif [[ "$action" == *"q"* ]]; then
-  clear
+  clears
   exit
 fi
 
