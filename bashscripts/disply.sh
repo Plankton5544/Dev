@@ -1,43 +1,32 @@
 #!/bin/bash
-#constants for start of the game
-#could make customizable?
-width=20 #<---Sets pixl width
-height=20 #<--- Sets pixl Length
-#both pixls determine the *death barrier*
-plyrx=10 #<--- determine the starting x position for player (or p)
-plyry=10 #<--- determine the starting y position for player (or p)
-end=0 #<--- sets the end of stop to continue (1 for end, 0 for run)
-
+width=20
+height=20
+plyrx=10
+plyry=10
+end=0
+printf "\x1b[?25l"
 ######################
 #Function for display#
 ######################
 #function
 drw() {
-  #sets hp garuntees proper amount of display?...
   hp=1
-  #clears screen each frame
-  clear
-  #Containg while statement for height and loops the inner while
-  #basically says if out tempvar!=height then loop
+printf "\033[1;1H"
+
 while [ "$hp" -le "$height" ]; do
-
-  lp=1 #<---same as last set var
-
-  #inner while states that tempvar2!=width then do inner
+  lp=1
   while [ "$lp" -le "$width" ]; do
-
     if [ "$lp" -eq "$plyrx" ] && [ "$hp" -eq "$plyry" ]; then
-    #determines if each time we print a . on screen if it -eq players x&y if so
     echo -n "P " #<----Prints P or character (for now)
-
-    else #<---Prints tradional *empty* pixl
-      echo -n ". "
+    else
+      echo -n "  "
     fi
-      ((lp++)) #<--- Counts up the tempvar2
+      ((lp++))
   done
-  echo #<--prints new line for the containg loop
-  ((hp++)) #<--- Counts up the tempvar
-done 
+  echo
+  ((hp++))
+done
+
 }
 ######################
 
@@ -49,24 +38,20 @@ done
 echo "### WELCOME TO (INSERT NAME) ###"
 echo "##       Move With WASD       ##"
 
-#Allows promt to show for set time
 sleep 2
-#loops for the movement reading and q for quite
 while [ $end -eq 0 ]; do
   drw
 
-  #Silently reads the persons input... 
-  #also causes visual glitch of letters appearing randomyl
   read -s -n1 move
-  #determines add/sub player_x/y in the above read move
+
 case $move in
   "w") ((plyry--)) ;;
   "s") ((plyry++)) ;;
   "a") ((plyrx--)) ;;
-  "d") ((plyrx++)) ;; 
+  "d") ((plyrx++)) ;;
 esac
 
-### THESE ARE ENDING FOR X & Y, basicaly ifs under or over height/width or 0 
+### THESE ARE ENDING FOR X & Y, basicaly ifs under or over height/width or 0
   if [ $move = "q" ]; then
    end=1
   fi
@@ -87,9 +72,6 @@ esac
   end=1
   fi
 
-  #FOR TESTING
-  echo $plyrx $plyry
-  ##
 done
 
 

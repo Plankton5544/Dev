@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+printf "\x1b[?25l"
+
 ####################
 #Starting Constants#
 ####################
@@ -48,7 +50,7 @@ elif [[ "$diff" = "MAX" ]]; then
   plyry=2
 elif [[ "$diff" = "invis" ]]; then
   background=" "
-  snake=" "
+  snake="]"
 elif [[ "$diff" = q ]]; then
   end=1
 fi
@@ -68,8 +70,9 @@ fd
 ######################
 #Function For Display#
 ######################
-drw() {
   clear
+drw() {
+  printf "\033[1;1H"
   hp=1
   while [ "$hp" -le "$height" ]; do
     lp=1
@@ -190,7 +193,8 @@ if [[ "$tail" -gt 2 ]]; then
   oldx=$plyrx
 fi
 
-  read -t $inter -n 1 -s move
+  read -s -t $inter -n1 move
+
 
   if [ -n "$move" ]; then
 
