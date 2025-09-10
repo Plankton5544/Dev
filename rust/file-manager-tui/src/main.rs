@@ -1,5 +1,5 @@
-use std::fs;                    // Like #include for file operations
-use std::env;                   // Environment functions
+use std::env;
+use std::fs; // Like #include for file operations // Environment functions
 
 fn main() {
     println!("File Manager Starting...");
@@ -14,5 +14,4 @@ fn main() {
             }
         }
     }
-
 }
