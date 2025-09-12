@@ -5,7 +5,7 @@
 # Idea: ASCII Renderer Using Builtins
 # Features:
 # BMP Stuff
-# Restructure & Polish
+#
 #
 ##
 # Check if we have at least one argument (Required String)

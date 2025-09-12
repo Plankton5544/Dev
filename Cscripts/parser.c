@@ -1,14 +1,19 @@
-#include <stdint.h>  // For something with binary shifting
+#include <stdint.h>  // For alot of stuffs
 #include <stdio.h>   // For perror() and printf()
 #include <fcntl.h>   // For open() and O_RDONLY
 #include <unistd.h>  // For read() and close()
 #include <string.h>  // For strings
-#include <stdlib.h>  // For abs
-#include <stdbool.h> // For bool
 
-
-
+// Author: Plankton5544
+/// Date Of Creation: September 10 2025
+//Idea: ASCII Renderer Using C
+//Features:
 /*
+   BMP Parsing
+   Restructure & Polish
+   Check if we have at least one argument (Required String)
+
+   !Reminder!
    uint8_t = 1 byte
    uint16_t = 2 bytes
    uint32_t = 4 bytes
@@ -39,7 +44,7 @@ int get_pixel_offset(int x, int y, int width, int padded_row_width, bool bottom_
 }
 
 int main () {
-    char brightness_scale[] = " .,:?&$%#@";
+    char brightness_scale[] = " .:>!$%#@M";
     char pixel_data[2000000];
     char buffer[2000000];
     uint8_t averages[2000000];
@@ -102,7 +107,12 @@ int main () {
     // Other
     int32_t height_signed = (int32_t)read_le_4(buffer, 22);
     bool bottom_up = height_signed > 0;
-    uint32_t actual_height = abs(height_signed);
+    if (height_signed < 0) {
+        height_signed=(height_signed * -1);
+    }
+    uint32_t actual_height = height_signed;
+
+
     // For 24-bit pixels:
     uint8_t blue  = pixel_data[0];
     uint8_t green = pixel_data[1];
@@ -152,7 +162,8 @@ int main () {
             for (int i=0; i < (width * actual_height); i++) {
         //        printf("%u\n", averages[i]);
 
-                uint8_t char_index=(averages[i] * (10 - 1) / 255 );
+                uint8_t char_index=(averages[i] * (10) / 255 );
+//                char_index=(9-char_index);
 
                 char ascii_char=brightness_scale[char_index];
                 printf("%c", ascii_char);
