@@ -20,7 +20,7 @@
         <h6>Senary Heading Level 6</h6>
 
         <!-- Test case variations -->
-        <h1>UPPERCASE HEADING TEST</h1>
+        <H1>UPPERCASE HEADING TEST</H1>
         <Title>Mixed Case Title</Title>
         <TITLE>UPPERCASE TITLE</TITLE>
 
@@ -36,6 +36,10 @@
         <!-- Link variations -->
         <a>Link without href attribute</a>
         <a href="https://google.com">Link with href</a>
+        <a href="mailto:test@example.com" class="email">Email link with class</a>
+
+        <!-- Paragraph with mixed content -->
+        <p>Paragraph with <a href="#anchor">embedded link</a> and more text after.</p>
 
         <!-- Text formatting (currently unsupported) -->
         <p>This has <strong>bold text</strong> and <em>italic text</em>.</p>
@@ -91,10 +95,38 @@
             </div>
         </div>
 
+        <!-- Self-closing tags -->
+        <br>
+        <br/>
+        <br />
+
         <!-- Empty elements -->
         <p></p>
         <h3></h3>
         <a></a>
+
+        <!-- Attributes with quotes and without -->
+        <p class="test-class" id='test-id' data-value=unquoted>Paragraph with various attributes</p>
+        <a href='single-quoted-url.com' title="Double quoted title">Link with mixed quotes</a>
+
+        <!-- Special characters and entities -->
+        <p>Text with &lt;escaped&gt; HTML &amp; entities like &copy; and &hearts;.</p>
+
+        <!-- Malformed HTML edge cases -->
+        <p>Unclosed paragraph
+        <p>Another paragraph that might close the previous one</p>
+
+        <h2>Heading with <span>nested span</span> element</h2>
+
+        <!-- Comments (should be ignored) -->
+        <!-- This is a comment and should not appear in output -->
+        <p>Text after comment</p>
+
+        <!-- Unusual spacing and formatting -->
+        <p   class="spaced"   >   Paragraph with extra spaces   </p>
+        <h1
+        >Multi-line
+        heading tag</h1>
 
         <!-- Multiple tags on same line -->
         <p>Start</p><p>Middle</p><p>End</p>
@@ -112,6 +144,13 @@
                 <li><strong>Bold</strong> item with <a href="#item3">link</a></li>
             </ul>
         </div>
+
+        <!-- DOCTYPE and meta tags (should be ignored) -->
+
+        <!-- Script and style tags (should be ignored) -->
+        <script>
+            console.log("This JavaScript should be ignored");
+        </script>
 
         <!-- Final test paragraph -->
         <p>Final test paragraph to ensure parsing continues correctly after all edge cases.</p>
