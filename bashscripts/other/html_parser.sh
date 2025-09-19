@@ -14,6 +14,15 @@ ITALIC_FORMAT="\033[3m"       # Italic
 CODE_COLOR="\033[90m"         # Gray
 RESET="\033[0m"               # Reset formatting
 
+remove_substring() {
+    local original_string="$1"
+    local substring="$2"
+
+    # Use parameter expansion to remove all occurrences of the substring
+    local modified_string="${original_string//$substring/}"
+    echo $modified_string
+}
+
 # Echo functions for different HTML elements
 title_echo() {
     printf "${TITLE_COLOR}%s${RESET}\n" "$1"
@@ -34,9 +43,16 @@ heading_echo() {
 
 link_echo() {
     local text="$1"
-    #TODO Implement Url parsing and then output differently
-    printf "${LINK_COLOR}%s${RESET}\n" "$text"
-}
+    local url="$2"
+
+    if [[ -n "$url" ]]; then
+      url="${url//<a href=\"/}"
+      url="${url//\"/}"
+      printf "${LINK_COLOR}%s<%s>${RESET}\n" "$text" "$url"
+    else
+      printf "${LINK_COLOR}%s${RESET}\n" "$text"
+    fi
+  }
 
 bold_echo() {
     printf "${BOLD_FORMAT}%s${RESET}\n" "$1"
@@ -62,49 +78,42 @@ hr_echo() {
     printf "────────────────────────────────────────\n"
 }
 
-# Combination function for paragraph with nested formatting
 paragraph_with_formatting() {
     local text="$1"
-    local is_bold="$3"
-    local is_italic="$4"
-    local is_link="$5"
+    local is_bold="$2"
+    local is_italic="$3"
+    local is_link="$4"
+    local is_list="$5"
 
     # Build format string
     local format=""
-    local reset_format=""
+    local buf=""
+    local reset_format="$RESET"
 
     if [[ $is_bold == 1 ]]; then
         format+="$BOLD_FORMAT"
-        reset_format="$RESET$reset_format"
     fi
 
     if [[ $is_italic == 1 ]]; then
         format+="$ITALIC_FORMAT"
-        reset_format="$RESET$reset_format"
     fi
 
     if [[ $is_link == 1 ]]; then
         format+="$LINK_COLOR"
-        reset_format="$RESET$reset_format"
     fi
 
-    printf "%s%s%s\n" "$format" "$text" "$reset_format"
+    if [[ $is_list == 1 ]]; then
+      buf+="  •"
+    fi
+
+
+    printf "%b%s%s%b\n" "$format" "$buf" "$text" "$reset_format"
+
+    is_link=0
+    is_italic=0
+    is_bold=0
 }
 
-
-
-
-
-
-remove_substring() {
-    local original_string="$1"
-    local substring="$2"
-
-    # Use parameter expansion to remove all occurrences of the substring
-    local modified_string="${original_string//$substring/}"
-
-    #echo "$modified_string"
-}
 
 ltrim() {
   temp="${1#"${1%%[![:space:]]*}"}";
@@ -144,17 +153,17 @@ output_check() {
 
     # 2. LIST HANDLING
   elif [[ $is_list == 1 ]]; then
-    #TODO FIXTHIS!!
-   # remove_substring "$text" "<li"
-   # remove_substring "$text" "/li"
-   # list_item_echo "$text"
+    remove_substring "$text" "li"
+    remove_substring "$text" "/li"
+    paragraph_with_formatting  "$text" "$is_bold" "$is_italic" "$is_link" "$is_list"
     is_list=0
 
     # 3. PARAGRAPH WITH NESTED FORMATTING
   elif [[ $is_par == 1 ]]; then
     # Apply inline formatting within paragraph
     if [[ $is_link == 1 ]]; then
-      link_echo "$text"
+      # TODO FIX THIS
+    #  link_echo "$text"
       is_link=0
     elif [[ $is_bold == 1 ]]; then
       #TODO FIX THIS
@@ -165,23 +174,24 @@ output_check() {
       #  italic_echo "$text"
       is_italic=0
     else
-      #TODO FIX THIS
-      #echo "$text"  # plain paragraph text
+      if [[ "$text" != *"/"* ]]; then
+        echo "$text"  # plain paragraph text
+      fi
       is_par=0
     fi
 
     # 4. STANDALONE INLINE ELEMENTS (outside paragraphs)
   elif [[ $is_link == 1 ]]; then
     link_echo "$text" "$current_url"
-      is_link=0
+    is_link=0
+    current_url=""
   elif [[ $is_bold == 1 ]]; then
     #TODO FIX THIS
     #bold_echo "$text"
       is_bold=0
   elif [[ $is_italic == 1 ]]; then
-    #TODO FIX THIS
     #italic_echo "$text"
-      is_italic=0
+    is_italic=0
 
     # 5. SPECIAL CASES
   elif [[ $is_hr == 1 ]]; then
@@ -190,13 +200,6 @@ output_check() {
   elif [[ $is_br == 1 ]]; then
     echo  # blank line
     is_br=0
-
-    #   TODO FIX THIS (If i want this?)
-    #   # 6. DEFAULT
-    # else
-    #   if [[ "$text" != *"<"* && "$text" != *">"* && "$text" != *"/"* ]]; then
-    #     echo "$text"  # plain text
-    #   fi
   fi
 }
 
@@ -229,10 +232,13 @@ tag_identification() {
       ;;
 
     *"<a"*)
+      if [[ "$1" == *"href"* ]]; then
+        current_url="$1"
+      fi
       is_link=1
       ;;
 
-    *"ul"*|*"ol"*)
+    *"<ul"*|*"<ol"*)
       is_list=1
       ;;
 
@@ -256,7 +262,11 @@ tag_identification() {
     *"<!--"*)
       #skip
       ;;
-
+    *"<li"*)
+      if [[ $is_list -eq 0 ]]; then
+        is_list=1
+      fi
+      ;;
     *)
       output_check "$1"
       ;;
