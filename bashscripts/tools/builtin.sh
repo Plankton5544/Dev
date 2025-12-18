@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ## Author: Plankton5544
+## DISCRETION!!! AI was used, I made this to check other scripts
 ### Date Of Creation: August 15 2025
 # Idea:
 # Features:
