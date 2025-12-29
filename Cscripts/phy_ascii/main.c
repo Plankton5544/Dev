@@ -70,7 +70,6 @@ void render(int height, int width, struct entity *object, int size) {
     for (int z=0; z<size; z++) {
         struct entity *obj = &object[z];
 
-        //struct pos pastpos[50];
         int length = sizeof(obj->pastpos) / sizeof(obj->pastpos[0]);
         for (int i=length-1; i>0; i--) {
             obj->pastpos[i].x = obj->pastpos[i-1].x;
