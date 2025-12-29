@@ -1,100 +1,189 @@
 #!/bin/bash
+# Script to analyze Bash script files, counting known, unknown,
+# and external commands, reporting them at the end.
 
-## Author: Plankton5544
-## DISCRETION!!! AI was used, I made this to check other scripts
-### Date Of Creation: August 15 2025
-# Idea:
-# Features:
-#
-#
-#
-##
-
-if [ $# -eq 0 ]; then
-    echo "Usage: $0 <string> [options]"
-    exit 1
+# Usage: ./script_name.sh <script_file> <--debug>
+declare -a external_commands=("jq" "curl" "wget" "git" "awk" "sed" "grep" "bc" "trap" "dialog" "PSTools" "tmux" "screen" "clear" "sleep")
+debug=0 ext=0 unknown=0 known=0
+if [[ $2 == "--debug" ]]; then
+  debug=1
 fi
 
-# Get the first argument (Required String)
-input="$1"
-shift  # Remove the first argument so getopts only sees the options
+rm_prefix() {
+  local input="$1"
+  # Remove leading spaces and tabs
+  while [[ "$input" =~ ^[[:space:]] ]]; do
+    input=${input##[[:space:]]}
+  done
+  echo $input
+}
 
-# Now process the options
-while getopts "::he" opt; do
-    case $opt in
-        e)
-          extra=1;;
-        h)
-          echo "Usage: $0
-          echo "Note:
-          echo "Options: "
-          exit 1
-            ;;
-        \?)
-            echo "Invalid option: -$OPTARG" >&2
-            exit 1
-            ;;
-        :)
-            echo "Option -$OPTARG requires an argument." >&2
-            exit 1
-            ;;
-    esac
-done
+env_check() {
+  local input="$1"
+  if [[ ($input == *"bin"* && ($input == *"bash"* || $input == *"env"* )) || $input == *'#!'* ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+exit_check() {
+  local input="$1"
+  if [[ $input == *"exit "* ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+if_check() {
+  local input="$1"
+  if [[ $input == *"if "* || $input == *"fi "* ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+for_check() {
+  local input="$1"
+  if [[ ($input == *"for"* && ($input == *'{'* || $input == *'('* || $input == *')'* )) || $input == *"done"* ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+def_check() {
+  local input="$1"
+  if [[ $input == *"="* && $input != *"=="* ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+fn_check() {
+  local input="$1"
+  if [[ $input == *"()"* && $input == *"{"* ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+comms_check() {
+  local input="$1"
+  if [[ ${input:0:1} == '#' ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+case_check() {
+  local input="$1"
+  if [[ $input == *"esac"* || ($input == *'"'* && $input == *')'* || $input == *";;"*) ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+incr_check() {
+  local input="$1"
+  if [[ ($input == *"(("* && $input == *"))"*) && ($input == *"++"* || $input == *"--"*) ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+ext_check() {
+  local input="$1"
+  for cmd in "${external_commands[@]}"; do
+    if [[ $input == *"$cmd"* ]]; then
+      return 0
+    else
+      return 1
+    fi
+  done
+}
+
+known() {
+  echo $line
+  ((known++))
+}
+unknown() {
+  local flag=$1
+  if [[ $flag == "-d" ]]; then
+    echo "line: $line"
+  fi
+    echo "Unknown"
+  ((unknown++))
+}
+external() {
+  local flag=$1
+  if [[ $flag == "-d" ]]; then
+    echo "line: $line"
+  fi
+  echo "!!!!EXTERNAL!!!!"
+  ((ext++))
+}
+
+debug() {
+  local fn=$1
+  if [[ $debug -eq 1 ]]; then
+    if type "$fn" &>/dev/null; then
+      $fn "-d"
+    else
+      echo "Debug: $fn function does not exist."
+    fi
+  fi
+}
 
 
+IFS=$'\n'
+while read -r line; do
+  if [ -n "$line" ]; then
 
-if [ -z "$input" ]; then
-  echo "ERROR! MISSING FILE"
-  exit 1
+    line=$(rm_prefix "$line")
+    word=${line%% *}
+
+    if ext_check $line; then
+      debug "external"
+    elif [ -z $(type -t "$word") ]; then
+
+      if env_check $word; then
+        debug "known"
+      elif fn_check $line; then
+        debug "known"
+      elif for_check $line; then
+        debug "known"
+      elif exit_check $line; then
+        debug "known"
+      elif case_check $line; then
+        debug "known"
+      elif incr_check $line; then
+        debug "known"
+      elif def_check $line; then
+        debug "known"
+      elif if_check $word; then
+        debug "known"
+      elif comms_check $word; then
+        debug "known"
+      else
+        if !(ext_check $line); then
+          debug "unknown"
+        fi
+      fi
+    fi
+  fi
+  done < "$1"
+unset IFS
+if [[ -n $ext || -n $unknown ]]; then
+  echo "External Calls: $ext"
+  echo "Unknown Calls: $unknown"
+elif [[ -z $known ]]; then
+  echo "No Lines Detected!"
 fi
-
-echo "|==Processing=File==|"
-while IFS= read -r line; do
-    # Process the 'line' variable here
-    # Example: Extract the first word using parameter expansion
-    first_word="${line%% *}"
-    output=$(type -t $first_word)
-    case $output in
-      "alias")
-        if [ "$extra" == 1 ]; then
-        echo "$first_word=alias"
-      else
-        echo "alias"
-        fi ;;
-      "keyword")
-        if [ "$extra" == 1 ]; then
-        echo "$first_word=keyword"
-      else
-        echo "keyword"
-        fi ;;
-      "builtin")
-        if [ "$extra" == 1 ]; then
-        echo "$first_word=builtin"
-      else
-        echo "builtin"
-        fi ;;
-      "file")
-        external=1
-        echo "$first_word     !file!"
-        ;;
-    esac
-
-
-done <  $input
-
-if [[ "$external" == 1 ]]; then
-  echo -e "\033[31mPotential External Commands Used!\033[0m"
-else
-  echo -e "\033[32mClear! No Detected External Commands Used\033[0m"
-fi
-
-
-
-# Unfinished need to implement:
-# better detections etc idk?
-#
-#
-#
-#
-#
-#

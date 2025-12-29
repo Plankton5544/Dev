@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <stdbool.h>
+#include <math.h>
 
 #include <termios.h>
 #include <fcntl.h>
@@ -26,9 +27,10 @@ struct vel {
 struct entity {
     struct pos position;
     struct vel velocity;
-    struct pos pastpos[5];
+    struct pos pastpos[3];
     int state;
 };
+
 
 void enable_raw_mode(void) {
     struct termios new_term;
@@ -112,12 +114,11 @@ void phy_update(struct entity *object, int size, float gravity, float dt) {
         obj->position.x += (obj->velocity.vx * dt);
         obj->position.y += (obj->velocity.vy * dt);
 
-        if ((obj->velocity.vx/obj->velocity.vy) <= 0.5) {
-            obj->state=1;
-        } else if ((obj->velocity.vx/obj->velocity.vy) <= 1) {
-            obj->state=2;
-        } else if ((obj->velocity.vx/obj->velocity.vy) >= 2) {
-            obj->state=3;
+        if (obj->velocity.vy != 0) {
+            float ratio = obj->velocity.vx / obj->velocity.vy;
+            if (ratio <= 0.5) obj->state = 1;
+            else if (ratio <= 1.0) obj->state = 2;
+            else obj->state = 3;
         }
     }
 }
@@ -154,8 +155,9 @@ void collision(struct entity *object, int size, int height, int width, float res
             float dy = obj2->position.y - obj->position.y;
             float distance_squared = dx*dx + dy*dy;
 
+
             if (distance_squared < 2.25 && distance_squared > 0.001f) {
-                float distance = distance_squared / distance_squared;
+                float distance = sqrtf(distance_squared);
 
                 // Normalize collision vector
                 float nx = dx / distance;
@@ -188,10 +190,10 @@ void collision(struct entity *object, int size, int height, int width, float res
     }
 }
 
-void handle_input(char c, struct entity *object, int size, bool *running, float *gravity, float *restitution) {
+void handle_input(char c, struct entity *object, int size, int *running, float *gravity, float *restitution) {
     switch (c) {
         case 'q':
-            *running = false;
+            *running = 1;
             break;
         case 'a':
             for (int z=0; z<size; z++) {
@@ -238,41 +240,19 @@ int main() {
     float gravity = 30.0f;
     float restitution = 0.7f;
     float dt = 0.05f;
-    struct entity ball[5];
+    struct entity ball[10];
     int size=sizeof(ball) / sizeof(*ball);
 
-    ball[0].position.x=20;
-    ball[0].position.y=20;
 
-    ball[0].velocity.vx=20;
-    ball[0].velocity.vy=0;
+    for (int z=0; z<size; z++) {
+        ball[z].position.x=(z+1)*2;
+        ball[z].position.y=(z+1)*2;
 
-    ball[1].position.x=10;
-    ball[1].position.y=10;
+        ball[z].velocity.vx=z;
+        ball[z].velocity.vy=0;
+    }
 
-    ball[1].velocity.vy=20;
-    ball[1].velocity.vx=0;
-
-    ball[2].position.x=15;
-    ball[2].position.y=15;
-
-    ball[2].velocity.vx=1;
-    ball[2].velocity.vy=0;
-
-    ball[3].position.x=24;
-    ball[3].position.y=35;
-
-    ball[3].velocity.vx=1;
-    ball[3].velocity.vy=4;
-
-    ball[4].position.x=1;
-    ball[4].position.y=3;
-
-    ball[4].velocity.vx=0;
-    ball[4].velocity.vy=2;
-
-
-    bool running=true;
+    int running=0;
 
     // Get the terminal size
     struct winsize sz;
@@ -280,7 +260,7 @@ int main() {
     printf("\033[2J"); // Clear terminal
     printf("\033[?25l");
 
-    while (running) {
+    while (running == 0) {
         //Physics
         phy_update(ball, size,  gravity, dt);
 

@@ -25,7 +25,7 @@ elif [ "$cp" -eq 1 ] && [ "$usr" = "PAPER" ]; then
 	outcome=0
 elif [ "$cp" -eq 1 ] && [ "$usr" = "ROCK" ]; then
 	outcome=1
-else 
+else
 	echo "ERROR OCCURED" && outcome=4 && cp=4
 fi
 echo "##### OUTCOME #####"
@@ -37,7 +37,7 @@ case "$outcome" in
 	"4") echo "ERROR!"		;;
 esac
 case "$cp" in
-	"1") echo "CP CHOSE SKIZZERS"	;; 
+	"1") echo "CP CHOSE SKIZZERS"	;;
 	"2") echo "CP CHOSE PAPER"	;;
 	"3") echo "CP CHOSE ROCK"	;;
 	"4") echo "ERROR!"		;;
@@ -45,5 +45,5 @@ esac
 echo "Clear? (y/n)"
 read clear
 if [ "$clear" = "y" ]; then
-	clear	
+  clear
 fi
