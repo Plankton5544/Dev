@@ -112,7 +112,7 @@ void render(int height, int width, struct entity *object, int size) {
                 case 1: screen[dy * width + dx] = 'o'; break;
                 case 2: screen[dy * width + dx] = '0'; break;
                 case 3: screen[dy * width + dx] = '@'; break;
-                case *: screen[dy * width + dx] = 'X'; break;
+                default: screen[dy * width + dx] = 'X'; break;
             }
         }
 

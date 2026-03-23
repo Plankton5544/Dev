@@ -54,6 +54,7 @@ void disable_raw_mode(void) {
 void render(int height, int width, struct entity *object, int size) {
     printf("\033[H");  // Move cursor to top-left
     char screen[height][width];
+
     for (int y=0; y<height; y++) {
         for (int x=0; x<width; x++) {
             if (x == width-1 || x == 0) {
@@ -156,7 +157,7 @@ void collision(struct entity *object, int size, int height, int width, float res
 
 
             if (distance_squared < 2.25 && distance_squared > 0.001f) {
-                float distance = sqrtf(distance_squared);
+                float distance = sqrt(distance_squared);
 
                 // Normalize collision vector
                 float nx = dx / distance;
@@ -243,13 +244,11 @@ int main() {
     int size=sizeof(ball) / sizeof(*ball);
 
 
-    for (int z=0; z<size; z++) {
-        ball[z].position.x=(z+1)*2;
-        ball[z].position.y=(z+1)*2;
+        ball[0].position.x=1*2;
+        ball[0].position.y=1*2;
 
-        ball[z].velocity.vx=z;
-        ball[z].velocity.vy=0;
-    }
+        ball[0].velocity.vx=1.1;
+        ball[0].velocity.vy=0;
 
     int running=0;
 
@@ -257,7 +256,7 @@ int main() {
     struct winsize sz;
 
     printf("\033[2J"); // Clear terminal
-    printf("\033[?25l");
+    printf("\033[?25l"); // Hide cursor
 
     while (running == 0) {
         //Physics
@@ -286,7 +285,7 @@ int main() {
         usleep(50000);
     }
 
-    printf("\033[?25h");
+    printf("\033[?25h"); // Show cursor
     disable_raw_mode();
     return 0;
 }

@@ -1,13 +1,9 @@
 #!/bin/bash
-
 ## Author: Plankton5544
 ### Date Of Creation: August 15 2025
 # Idea: ASCII Renderer Using Builtins
-# Features:
-# BMP Stuff
-#
-#
-##
+
+
 # Check if we have at least one argument (Required String)
 if [ $# -eq 0 ]; then
     echo "Usage: $0 <string> [options]"
