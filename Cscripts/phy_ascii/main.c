@@ -278,7 +278,7 @@ int main() {
         //Collision
         collision(ball, size, terminal.row-1, terminal.column-1, restitution);
 
-        //RendeR
+        //Render
         render(terminal.row, terminal.column, ball, size);
 
         //Sleep
